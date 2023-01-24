@@ -1,0 +1,11 @@
+{% extends 'inv/base.html' %}
+{% block container %}
+<div class="media content-section">
+    <h2 class="display-4">{{quiz_title}}</h2>
+    <p class="lead">By {{quiz_master}}</p>
+    <hr class="my-4">
+    <p>{{quiz_desc}}</p>
+    <a class="btn btn-success btn-lg" href="#" role="button">Start Quiz</a>
+  </div>
+
+{% endblock container %}

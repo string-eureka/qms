@@ -15,12 +15,12 @@
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Need An Account? <a class="ml-2" href="{% url 'users-register' %}">Sign Up Now</a><hr>
+                Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a><hr>
             </small>
         </div>
-        <div clas="'gauth">
+        <div clas="'border-top pt-3">
             <h3>Google User?</h3>
-            <a href="{% provider_login_url 'google' %}">Login With Google</a>
+            <a class="ml-2" href="{% provider_login_url 'google' %}">Login With Google Instead</a>
         </div>
     </div>
 {% endblock content %}

@@ -131,8 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK='bootstrap4'
 
-LOGIN_REDIRECT_URL='inv-home'
-LOGOUT_REDIRECT_URL = 'users-logout'
+LOGIN_REDIRECT_URL='home'
+LOGOUT_REDIRECT_URL = 'logout'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -151,4 +151,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SITE_ID = 2
+SITE_ID = 3
+AUTH_USER_MODEL = "users.User"

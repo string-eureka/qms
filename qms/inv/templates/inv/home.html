@@ -1,13 +1,15 @@
 {% extends "inv/base.html" %}
 {% block content %}
+  {% for quiz in quizlist %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="#">{{quiz.quiz_master}}</a>
               <small class="text-muted">{{ quiz.quiz_created|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="#">{{quiz.quiz_title}}</a></h2>
+            <h2><a class="article-title" href="{% url 'inv:view-quiz' quiz.id%}" >{{quiz.quiz_title}}</a></h2>
             <p class="article-content">{{quiz.quiz_desc}}</p>
           </div>
         </article>
+  {% endfor %}      
 {% endblock content %}

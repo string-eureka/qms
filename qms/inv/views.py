@@ -3,37 +3,60 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from users.models import User
 from .models import Quiz, Question,QuizResult
 from django.contrib import messages
+from .forms import AddQuiz,AddQuestion
+
+user=User.objects.all()
 
 def home(request):
     context={
-        Quiz.objects.all()
+        'quizlist':list(Quiz.objects.all())
     }
-    return render(request, 'inv/home.html',{'context':context})
+    return render(request, 'inv/home.html',context=context)
 
-def is_quizmaster():
-    return User.Quizmaster
+def is_quizmaster(user):
+    return user.Quizmaster
 
 def error(request):
     return render(request,'inv/error.html')
 
 @login_required
-def view_quiz(request, quiz_id):
+def view_quiz(request,quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
-    questions_list = Quiz.questions.all()
     context = Quiz.objects.all()
-    return render(request, 'view_quiz.html', {'quiz': quiz, 'questions_list': questions_list,'context': context})
+    return render(request, 'inv/view_quiz.html', {'quiz':quiz, 'context': context})
 
 @login_required
-@user_passes_test(is_quizmaster,login_url='error')
+@user_passes_test(is_quizmaster,login_url='inv:error')
 def create_quiz(request):
     if request.method == 'POST':
-        title = request.POST['title']
-        desc = request.POST['desc']
-        #if
-        quiz = Quiz.objects.create(quizmaster=request.user, title=title, desc=desc)
-        return redirect('view_quiz', quiz_id=quiz.id)
+        form = AddQuiz(request.POST)
+        if form.is_valid():
+            form = form.cleaned_data
+            quiz = Quiz(quiz_title=form.get("quiz_title"),quiz_desc=form.get("quiz_desc"),quiz_master=request.user)
+            quiz.save()
+            quiz_id=Quiz.objects.filter(quiz_master=request.user).last().id
+            messages.success(request, f' {quiz.quiz_title} Created!')
+            return redirect("inv:create-question",quiz_id,1)
     else:
-        return render(request, 'create_quiz.html')
+        form = AddQuiz()
+        return render(request, "inv/create_quiz.html", {"form": form})
+
+@login_required
+@user_passes_test(is_quizmaster,login_url='inv:error')
+def create_question(request,quiz_id,q_no):
+    quiz = Quiz.objects.get(pk=quiz_id)
+    if request.method == "POST":
+        form = AddQuestion(request.POST)
+        if form.is_valid():
+            form = form.cleaned_data
+            question=Question(quiz=quiz,prompt=form.get("prompt"),type=form.get("type"),points=form.get("points"),pen=form.get("pen"))
+            question.save()
+            q_no+=1
+            messages.success(request, f' Question {q_no} Created!')
+            return redirect("inv:create-question",quiz_id=quiz_id, q_no=q_no)
+    else:
+        form=AddQuestion()
+        return render(request,"inv/create_question.html",{"form":form})        
 
 # @login_required
 # @user_passes_test(is_quizmaster)
